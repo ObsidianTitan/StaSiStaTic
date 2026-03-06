@@ -1,5 +1,6 @@
 import os
 import shutil
+import sys
 from recur_pg_gen import generate_pages_recursive
 
 def copy_static(source_dir, dest_dir):
@@ -23,8 +24,9 @@ def _copy_dir_contents(source_dir, dest_dir):
             _copy_dir_contents(src_path, dest_path)        
 
 def main():
-    copy_static("static", "public")
-    generate_pages_recursive("content", "template.html", "public")
+    basepath = sys.argv[1] if len(sys.argv) > 1 else "/"
+    copy_static("static", "docs")
+    generate_pages_recursive("content", "template.html", "docs", basepath)
 
 if __name__ == "__main__":
     main()

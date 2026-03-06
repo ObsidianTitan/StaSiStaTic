@@ -2,7 +2,12 @@ import os
 from markdown_to_html_node import markdown_to_html_node
 from title_extractor import extract_title
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath):
+    if not basepath.startswith("/"):
+        basepath = "/" + basepath
+    if not basepath.endswith("/"):
+        basepath = basepath + "/"
+
     with open(template_path, "r") as f:
         temp = f.read()
 
@@ -27,7 +32,10 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
             page_title = extract_title(markdown)
 
             full_html = temp.replace("{{ Title }}", page_title).replace("{{ Content }}", html_file)              
-
+            if basepath != "/":
+                full_html = full_html.replace('href="/',f'href="{basepath}')
+                full_html = full_html.replace('src="/', f'src="{basepath}')
+   
             dst_html = os.path.splitext(dst_path)[0] + ".html"
             os.makedirs(os.path.dirname(dst_html), exist_ok = True)
  
